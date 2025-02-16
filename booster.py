@@ -5,6 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
 
 systems = ["win10", "macos15", "macos14"]
 browsers = ["chrome", "firefox", "safari"]
@@ -32,9 +33,8 @@ def get_chrome_options():
 
 def start_chrome_browser(system_name, browser_name, browser_version, i):
     options = get_chrome_options()
-    chromedriver = "/usr/bin/chromedriver"
-    os.environ["webdriver.chrome.driver"] = chromedriver
-    driver = webdriver.Chrome(options=options)
+    # 使用 webdriver-manager 自动管理 Chrome 驱动
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     random_url = f"https://www.browserling.com/browse/{system_name}/{browser_name}{browser_version}/https://www.bilibili.com/video/BV1vx4y1e7t2/"
     print(f"启动第 {i} 个配置文件：系统={system_name} 浏览器={browser_name} 版本={browser_version}...")
