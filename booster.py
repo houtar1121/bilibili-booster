@@ -34,7 +34,7 @@ def start_chrome_browser(system_name, browser_name, browser_version, i):
     options = get_chrome_options()
     chromedriver = "/usr/bin/chromedriver"
     os.environ["webdriver.chrome.driver"] = chromedriver
-    driver = webdriver.Chrome(chrome_options=options,executable_path=chromedriver)
+    driver = webdriver.Chrome(options=options)
 
     random_url = f"https://www.browserling.com/browse/{system_name}/{browser_name}{browser_version}/https://www.bilibili.com/video/BV1vx4y1e7t2/"
     print(f"启动第 {i} 个配置文件：系统={system_name} 浏览器={browser_name} 版本={browser_version}...")
