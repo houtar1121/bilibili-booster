@@ -33,8 +33,8 @@ def get_chrome_options():
 
 def start_chrome_browser(system_name, browser_name, browser_version, i):
     options = get_chrome_options()
-    # 使用 webdriver-manager 自动管理 Chrome 驱动
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    chromedriver_path = "/usr/bin/chromedriver"
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
 
     random_url = f"https://www.browserling.com/browse/{system_name}/{browser_name}{browser_version}/https://www.bilibili.com/video/BV1vx4y1e7t2/"
     print(f"启动第 {i} 个配置文件：系统={system_name} 浏览器={browser_name} 版本={browser_version}...")
