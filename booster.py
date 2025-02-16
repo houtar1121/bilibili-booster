@@ -4,9 +4,7 @@ import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from webdriver_manager.chrome import ChromeDriverManager
 
 systems = ["win10", "macos15", "macos14"]
 browsers = ["chrome", "firefox", "safari"]
@@ -19,7 +17,7 @@ temp_dir = tempfile.mkdtemp(prefix="chrome_profiles")
 if not os.path.exists(temp_dir):
     os.makedirs(temp_dir)
 
-def get_chrome_options(system_name, browser_version):
+def get_chrome_options():
     options = ChromeOptions()
     options.add_argument(f"user-data-dir={temp_dir}/profile_{random.randint(1, 5)}")
     options.add_argument(f"profile-directory=Profile {random.randint(1, 5)}")
@@ -27,12 +25,16 @@ def get_chrome_options(system_name, browser_version):
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-plugins")
     options.add_argument("--headless")  # 无头模式
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
     return options
 
-def start_chrome_browser(system_name, browser_version, i):
-    options = get_chrome_options(system_name, browser_version)
-    service = ChromeService(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
+def start_chrome_browser(system_name, browser_name, browser_version, i):
+    options = get_chrome_options()
+    chromedriver = "/usr/bin/chromedriver"
+    os.environ["webdriver.chrome.driver"] = chromedriver
+    driver = webdriver.Chrome(chrome_options=options,executable_path=chromedriver)
 
     random_url = f"https://www.browserling.com/browse/{system_name}/{browser_name}{browser_version}/https://www.bilibili.com/video/BV1vx4y1e7t2/"
     print(f"启动第 {i} 个配置文件：系统={system_name} 浏览器={browser_name} 版本={browser_version}...")
@@ -61,7 +63,7 @@ def run_browser_instance(i):
         elif system_name == "macos15":
             browser_version = random.choice(safari_versions_macos15)
 
-    start_chrome_browser(system_name, browser_version, i)
+    start_chrome_browser(system_name, browser_name, browser_version, i)
 
 def main():
     with ThreadPoolExecutor(max_workers=5) as executor:
